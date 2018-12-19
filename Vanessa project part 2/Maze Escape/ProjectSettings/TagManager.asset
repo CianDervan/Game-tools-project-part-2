@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - bullet
+  - Celebration
+  - image1
+  - box
   layers:
   - Default
   - TransparentFX

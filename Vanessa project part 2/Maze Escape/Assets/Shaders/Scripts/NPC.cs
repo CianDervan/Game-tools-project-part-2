@@ -12,12 +12,15 @@ public class NPC : MonoBehaviour
     private int m_CurrentWaypoint;
     private bool m_IsPlayerNear;
     private Animator m_Animator;
+    public List<Transform> PatrolPoints;
+    private int _currentPoint;
 
     [SerializeField] Manager m_Manager;
     [SerializeField] float m_FieldOfView;
     [SerializeField] float m_ThresholdDistance;
     [SerializeField] private Transform[] m_Waypoints;
     [SerializeField] GameObject m_Player;
+
 
     // Use this for initialization
     void Start()
@@ -27,11 +30,16 @@ public class NPC : MonoBehaviour
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_Animator = GetComponent<Animator>();
         m_CurrentWaypoint = 0;
+        SetDestination();
 
         m_NavMeshAgent.updatePosition = false;
         m_NavMeshAgent.updateRotation = true;
 
         HandleAnimation();
+
+       
+
+
     }
 
     // Update is called once per frame
@@ -51,6 +59,25 @@ public class NPC : MonoBehaviour
             default:
                 break;
         }
+
+
+        if (m_NavMeshAgent.remainingDistance <= m_NavMeshAgent.stoppingDistance)
+        {
+            if (PatrolPoints.Count > _currentPoint + 1)
+            {
+                _currentPoint++;
+            }
+            else
+            {
+                _currentPoint = 0;
+            }
+            SetDestination();
+        }
+    }
+
+    private void SetDestination()
+    {
+        m_NavMeshAgent.SetDestination(PatrolPoints[_currentPoint].position);
     }
 
     void CheckPlayer()
@@ -109,10 +136,18 @@ public class NPC : MonoBehaviour
 
     void Patrol()
     {
-        //Debug.Log("Patrolling");
-
-        CheckWaypointDistance();
-        m_NavMeshAgent.SetDestination(m_Waypoints[m_CurrentWaypoint].position);
+        if (m_NavMeshAgent.remainingDistance <= m_NavMeshAgent.stoppingDistance)
+        {
+            if (PatrolPoints.Count > _currentPoint + 1)
+            {
+                _currentPoint++;
+            }
+            else
+            {
+                _currentPoint = 0;
+            }
+            SetDestination();
+        }
     }
 
     void CheckWaypointDistance()
