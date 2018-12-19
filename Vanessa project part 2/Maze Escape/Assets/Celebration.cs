@@ -13,6 +13,8 @@ public class Celebration : MonoBehaviour {
         myCanvas.enabled = false;
     }
 
+
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "box")
